@@ -28,7 +28,7 @@ Vue.use(authLaravel);
 
 url: it's endpoint in server-side which will handle the requests.
 
-## To avoid problem use the same format in server-side
+## To avoid problems use the same format in server-side
 
  1- checkToken
  
