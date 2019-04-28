@@ -1,15 +1,17 @@
 import Vue from 'vue'
-import Router from 'vue-router';
 import Vuex from 'vuex'
 import axios from "axios"
 import VueCookies from 'vue-cookies'
 
 
 Vue.use(Vuex);
-Vue.use(VueCookies)
+Vue.use(axios);
+Vue.use(VueCookies);
+
 
 const store = new Vuex.Store({
     state: {
+        url: '127.0.0.1',
         currentUser: {
             access_token: undefined,
             id: -1,
@@ -23,18 +25,33 @@ const store = new Vuex.Store({
         isAuth(state) {
             return state.auth;
         },
+        url(state) {
+            return state.url;
+        }
     },
     mutations: {
         setCurrentUser(state, payload) {
-            $cookies.set("user", payload);
+            VueCookies.set("user", payload);
             state.currentUser = payload;
         },
 
         setAuth(state, payload) {
             state.auth = payload;
+        },
+        setUrl(state, payload) {
+            state.url = payload;
         }
     },
     actions: {
+        setURL({
+            commit
+        }, data) {
+            return new Promise((resolve, reject) => {
+                commit('setUrl', data);
+                resolve(this.getters.isAuth);
+
+            })
+        },
         updateIsAuth({
             commit
         }, data) {
@@ -48,9 +65,10 @@ const store = new Vuex.Store({
             commit
         }, data) {
             return new Promise((resolve, reject) => {
-                axios.post(this.getters.url + data.url, data.data)
+                axios.post(this.getters.url + data.url, data)
                     .then((res) => {
                         if (res.data.auth) {
+
                             axios.defaults.headers.common['Authorization'] = "Bearer " + res.data.user.access_token;
                             commit('setCurrentUser', res.data.user);
                             commit('setAuth', true);
@@ -65,22 +83,15 @@ const store = new Vuex.Store({
             commit
         }, data) {
             return new Promise((resolve, reject) => {
-
-                let accessToken = $cookies.get("user").access_token;
-                let user = $cookies.get('user');
-                let authServer = false;
-                axios.defaults.headers.common['Authorization'] = "Bearer " + user.access_token;
-
                 axios.get(this.getters.url + data.url)
                     .then(res => {
-                        authServer = res.data.auth;
+                        let authServer = res.data.auth;
+                        commit('setAuth', authServer);
                         if (authServer) {
                             commit('setCurrentUser', res.data.user);
-                            commit('setAuth', true);
                             axios.defaults.headers.common['Authorization'] = "Bearer " + accessToken;
-                            resolve(this.getters.isAuth);
-
                         }
+                        resolve(this.getters.isAuth);
                     }).catch(err => {
                         commit('setAuth', false);
                         reject(err);
@@ -107,36 +118,36 @@ const store = new Vuex.Store({
     },
 });
 
-var authLaravel = {
-    install(Vue, defaultOptions = {}) {
-        Vue.authLaravel = Vue.prototype.$authLaravel
-        if (process.env.NODE_ENV === 'development')
-            window.$authLaravel = Vue.prototype.$authLaravel
+export default {
+    install(Vue, defaultOptions) {
+        Vue.prototype.$authLaravel = this;
     },
     login: function (data) {
-        store.dispatch('Login', data).then(res => {
-            return res;
+        return store.dispatch('Login', data).then(res => {
+            return Promise.resolve(res);
         }).catch(err => {
-            return err;
+            return Promise.reject(err);
         });
     },
     checkToken: function (url) {
-        store.dispatch('setTokenForRequest', {
+        return store.dispatch('setTokenForRequest', {
             url: url
         }).then(res => {
-            return res;
+            return Promise.resolve(res);
         }).catch(err => {
-            return err;
-        });
+            return Promise.reject(err);
+        })
     },
     logout: function (url) {
-        store.dispatch('Logout', {
+        return store.dispatch('Logout', {
             url: url
         }).then(res => {
-            return res;
+            return Promise.resolve(res);
         }).catch(err => {
-            return err;
+            return Promise.reject(err);
         });
     },
+    setURL: function (url) {
+        store.dispatch('setURL', url);
+    }
 }
-module.exports = authLaravel;
