@@ -31,7 +31,7 @@ url: it's endpoint in server-side which will handle the requests.
     }
     
 2- login
-
+```
    public function Login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -42,31 +42,32 @@ url: it's endpoint in server-side which will handle the requests.
         }
         return response()->json(['message' => 'please check form your credentials'], 401);
     }
-         
+```
 3- logout
-
-
-  public function Logout()
+```
+     public function Logout()
     {
         \Auth::user()->access_token = null;
         $result = \Auth::user()->save();
         return response()->json(['message' => $result], 200);
     }
+```
+   
     
-    
-    
+
+
 
 
 ## API
-1- checkToken
-    this.$authLaravel.login('url') 
-    return the response from the server to you
-2- login
-          data = url and post data
-          for example data ={url:'api\login',user:'username',password:'123123'}
-      this.$authLaravel.login(data) 
-      return the response from the server to you
-
-3- logout
-      this.$authLaravel.login('url') 
-      return the response from the server to you
+1- checkToken <br>
+    this.$authLaravel.login('url')  <br>
+    return the response from the server to you <br>
+2- login  <br>
+          data = url and post data  <br>
+          for example data ={url:'api\login',user:'username',password:'123123'}  <br>
+      this.$authLaravel.login(data)   <br> 
+      return the response from the server to you  <br>
+  <br>
+3- logout  <br>
+      this.$authLaravel.login('url')   <br>
+      return the response from the server to you  <br>
