@@ -20,6 +20,7 @@ url: it's endpoint in server-side which will handle the requests.
 ## To avoid problem use the same format in server-side
 
  1- checkToken
+ 
     public function checkMyLogin()
     {
         if (\Auth::guard('api')->check()) {
@@ -30,7 +31,8 @@ url: it's endpoint in server-side which will handle the requests.
     }
     
 2- login
-public function Login(Request $request)
+
+   public function Login(Request $request)
     {
         $credentials = $request->only('email', 'password');
         if (\Auth::attempt($credentials)) {
@@ -38,17 +40,19 @@ public function Login(Request $request)
             $result = \Auth::user()->save();
             return response()->json(['user' => \Auth::user(), 'auth' => $result], 200);
         }
-
         return response()->json(['message' => 'please check form your credentials'], 401);
     }
          
 3- logout
+
+
   public function Logout()
     {
         \Auth::user()->access_token = null;
         $result = \Auth::user()->save();
         return response()->json(['message' => $result], 200);
     }
+    
     
     
 
