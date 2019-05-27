@@ -71,3 +71,9 @@ url: it's endpoint in server-side which will handle the requests.
 3- logout  <br>
       this.$authLaravel.login('url')   <br>
       return the response from the server to you  <br>
+
+
+
+4- isAuth  <br>
+      this.$authLaravel.isAuth()   <br>
+      return is current user is login before or not and is Auth <br>
