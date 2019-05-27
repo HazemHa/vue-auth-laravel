@@ -9,26 +9,15 @@ which must impelement in back-end side and  must return current authenticate use
 i will take this token  and put it inside axios headers to make a whole requests to be auth.
 
 ## Installation
-  `npm i vue-auth-laravel`
+  `npm install @hazemha/vue-auth-laravel`
 
 
 ## Usage
-import in app.js
-```
-import authLaravel from 'vue-auth-laravel'
-
-```
-then
-
-```
-Vue.use(authLaravel);
-
-```
-
+use checkToken in main compoent
 
 url: it's endpoint in server-side which will handle the requests.
 
-## To avoid problems use the same format in server-side
+## To avoid problem use the same format in server-side
 
  1- checkToken
  
@@ -64,27 +53,21 @@ url: it's endpoint in server-side which will handle the requests.
     }
 ```
    
+    
+
+
+
 
 ## API
 1- checkToken <br>
-```
-    this.$authLaravel.login('url')  
-```
-
-return the response from the server to you as a Promise<br>
+    this.$authLaravel.login('url')  <br>
+    return the response from the server to you and check if the user login before to avoid login again <br>
 2- login  <br>
           data = url and post data  <br>
-     ```     
-      for example data ={url:'api\login',user:'username',password:'123123'}
-      this.$authLaravel.login(data)   
-     ``` 
-   return the response from the server to you as a Promise <br>
+          for example data ={url:'api\login',user:'username',password:'123123'}  <br>
+      this.$authLaravel.login(data)   <br> 
+      return the response from the server to you  <br>
   <br>
 3- logout  <br>
-``` this.$authLaravel.login('url') ```
-     
- return the response from the server to you as a Promise <br>
- ## Note: must set url because axios take current path in the browser
- 4- setURL 
- ``` this.$authLaravel.setURL("http://127.0.0.1:8000/"); ```
-doesn't return anything and set url for request which will send to server 
+      this.$authLaravel.login('url')   <br>
+      return the response from the server to you  <br>
