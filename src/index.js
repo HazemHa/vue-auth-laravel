@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from "axios"
+//import axios from "axios"
 import VueCookies from 'vue-cookies'
 
 
 Vue.use(Vuex);
-Vue.use(axios);
+//Vue.use(axios);
 Vue.use(VueCookies);
 
 
 const store = new Vuex.Store({
     state: {
-        url: '127.0.0.1',
+        baseURL: "http://"+window.location.hostname+"/",
         currentUser: {
             access_token: undefined,
             id: -1,
@@ -25,8 +25,8 @@ const store = new Vuex.Store({
         isAuth(state) {
             return state.auth;
         },
-        url(state) {
-            return state.url;
+        baseURL(state) {
+            return state.baseURL;
         }
     },
     mutations: {
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
             state.auth = payload;
         },
         setUrl(state, payload) {
-            state.url = payload;
+            state.baseURL = payload;
         }
     },
     actions: {
@@ -65,7 +65,7 @@ const store = new Vuex.Store({
             commit
         }, data) {
             return new Promise((resolve, reject) => {
-                axios.post(this.getters.url + data.url, data)
+                axios.post(this.getters.baseURL + data.url, data)
                     .then((res) => {
                         if (res.data.auth) {
 
@@ -83,7 +83,7 @@ const store = new Vuex.Store({
             commit
         }, data) {
             return new Promise((resolve, reject) => {
-                axios.get(this.getters.url + data.url)
+                axios.get(this.getters.baseURL + data.url)
                     .then(res => {
                         let authServer = res.data.auth;
                         commit('setAuth', authServer);
@@ -104,7 +104,7 @@ const store = new Vuex.Store({
             commit
         }, data) {
             return new Promise((resolve, reject) => {
-                axios.post(this.getters.url + data.url)
+                axios.post(this.getters.baseURL + data.url,data.data)
                     .then((res) => {
                         commit('setCurrentUser', res.data.user);
                         $cookies.remove("access_token");
@@ -138,9 +138,9 @@ export default {
             return Promise.reject(err);
         })
     },
-    logout: function (url) {
+    logout: function (url,data) {
         return store.dispatch('Logout', {
-            url: url
+            url: url,data:data
         }).then(res => {
             return Promise.resolve(res);
         }).catch(err => {
